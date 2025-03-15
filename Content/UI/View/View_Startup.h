@@ -1,0 +1,16 @@
+class UView_Startup_C : public UUserWidget 
+{
+public:
+    static UClass* StaticClass()
+    {
+        return LoadObject<UClass>(nullptr, TEXT("/Game/UI/View/View_Startup.View_Startup_C")); 
+    }
+
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Button_30", Category="View_Startup"))
+    TObjectPtr<UButton> Button_30;
+
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="TextBlock_36", Category="View_Startup"))
+    TObjectPtr<UTextBlock> TextBlock_36;
+
+
+};

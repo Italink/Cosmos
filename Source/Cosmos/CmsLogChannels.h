@@ -1,0 +1,7 @@
+#pragma once
+
+#include "Logging/LogMacros.h"
+
+COSMOS_API DECLARE_LOG_CATEGORY_EXTERN(LogCms, Log, All);
+COSMOS_API DECLARE_LOG_CATEGORY_EXTERN(LogCmsUI, Log, All);
+COSMOS_API DECLARE_LOG_CATEGORY_EXTERN(LogCmsCharacter, Log, All);
