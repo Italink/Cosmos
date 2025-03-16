@@ -2,6 +2,7 @@
 
 #include "GameFramework/PlayerController.h"
 #include "UI/Controllers/StartupUIC.h"
+#include "UI/Controllers/AiAgentUIC.h"
 #include "CmsPlayerController.generated.h"
 
 
@@ -13,5 +14,5 @@ class ACmsPlayerController : public APlayerController
 	virtual void BeginPlay() override;
 
 	UPROPERTY()
-	TObjectPtr<UStartupUIC> StartupUIC;
+	TObjectPtr<UAiAgentUIC> StartupUIC;
 };

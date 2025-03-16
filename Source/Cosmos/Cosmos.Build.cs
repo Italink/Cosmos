@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class Cosmos : ModuleRules
 {
@@ -19,8 +20,11 @@ public class Cosmos : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"Blueprint_C",
-			"UMG"
-		});
+			"UMG",
+            "Json",
+			"Http",
+            "WebSockets"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
