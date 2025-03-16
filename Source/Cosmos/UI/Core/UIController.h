@@ -8,6 +8,7 @@
 UCLASS()
 class UIController : public UObject{
     GENERATED_UCLASS_BODY()
+    friend class FUIManager;
 public:    
     FSimpleMulticastDelegate OnVisiblityChangedDelegate;
 public:
@@ -23,7 +24,6 @@ public:
     void SetVisible(bool bVisible);
     void Show();
     void Hide();
-
     void ForceDestory();
 
 protected:
@@ -39,6 +39,8 @@ protected:
     virtual void OnCloseEvent() {}
 
     virtual void OnTickEvent(float Delta) {}
+
+    virtual UWorld* GetWorld() const override;
 public:
     int ZOrder = 0;
     TMap<UUserWidget*, ESlateVisibility> CachedVisibilities;

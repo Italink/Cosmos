@@ -8,5 +8,11 @@ public:
         return LoadObject<UClass>(nullptr, TEXT("/Game/UI/View/AiAgent/View_AiAgent.View_AiAgent_C")); 
     }
 
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Button_Ask", Category="View_AiAgent"))
+    TObjectPtr<UButton> Button_Ask;
+
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Text_Content", Category="View_AiAgent"))
+    TObjectPtr<UMultiLineEditableText> Text_Content;
+
 
 };

@@ -42,5 +42,9 @@ TStatId FUIManager::GetStatId() const
 
 void FUIManager::Tick(float InDeltaSeconds)
 {
-
+	for (auto Controller : AllControllers) {
+		if (Controller) {
+			Controller->OnTickEvent(InDeltaSeconds);
+		}
+	}
 }

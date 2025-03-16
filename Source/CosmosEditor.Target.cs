@@ -10,6 +10,7 @@ public class CosmosEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
-		ExtraModuleNames.Add("Cosmos");
-	}
+        ExtraModuleNames.Add("Cosmos");
+        ExtraModuleNames.Add("CosmosEditor");
+    }
 }

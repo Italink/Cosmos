@@ -94,3 +94,8 @@ void UIController::ForceDestory()
     }
 }
 
+UWorld* UIController::GetWorld() const
+{
+    return FUIManager::Get()->GetPlayerController()->GetWorld();
+}
+
