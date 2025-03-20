@@ -42,6 +42,9 @@ public class CosmosEditor : ModuleRules
 			"EditorStyle",
 			"HairStrandsCore",
 			"AssetRegistry",
+            "GaussianSplattingEditor",
+			"Json",
+			"Niagara"
         });
 	}
 }

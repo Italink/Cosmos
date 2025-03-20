@@ -19,10 +19,9 @@ public class Cosmos : ModuleRules
 			"Engine", 
 			"InputCore",
 			"EnhancedInput",
-			"Blueprint_C",
 			"UMG",
             "Json",
-			"Http",
+			"HTTP",
             "WebSockets",
             "SignalProcessing"
         });
