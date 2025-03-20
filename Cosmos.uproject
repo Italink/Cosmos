@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.5",
+	"EngineAssociation": "{82BD2F13-4584-9B6D-12BD-A184B548ECDB}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -12,7 +12,7 @@
 		{
 			"Name": "CosmosEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [
