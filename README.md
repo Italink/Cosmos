@@ -1,16 +1,26 @@
 # COSMOS
 
-- https://www.bilibili.com/video/BV1uRHbeLES2
+**Cosmos** 是一个独立的炫技项目，它将包含一些前沿技术的探索：
 
-- https://www.bilibili.com/video/BV1ZG4y1N7F8
-- https://www.bilibili.com/video/BV1Xa4y1s7bz
+- AI
+- 3D GS 
+
+以及一些游戏框架的迭代：
+
+- 程序化内容管理
+- C++ MVC UI开发框架 以及 通用 3D UI 模块
+- 资产多人协作功能增强
+- 通用频谱模块 以及  MetaSound 集成
+- 虚拟化碰撞
+- 壁纸
+
+还有一些炫酷的特效：
+
+- ...
 
 
 
-https://www.shadertoy.com/view/3csSWB
+**Cosmos** 目前并不能完整构建，但会阶段性的发布Release包，所有的源代码会在七月份公开。
 
-https://www.shadertoy.com/view/cdK3Wy
 
-https://www.shadertoy.com/view/4ffczr
 
-https://www.shadertoy.com/view/XcGcRw
