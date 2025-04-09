@@ -1,0 +1,3 @@
+[submodule "Plugins/Blueprint_C"]
+	path = Plugins/Blueprint_C
+	url = https://github.com/Italink/Blueprint_C.git
