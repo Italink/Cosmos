@@ -1,50 +1,78 @@
 #include "UIManager.h"
 #include "Modules/ModuleManager.h"
-#include "UIController.h"
+#include "UIPresenter.h"
 #include "Kismet/GameplayStatics.h"
 
-FUIManager* FUIManager::Get()
+TObjectPtr<UGameInstance> UUIManager::LastUseGameInstance;
+
+UUIManager* UUIManager::Get(UObject* InWorldContext)
 {
-	static FUIManager Instance;
-	return &Instance;
+	UGameInstance* GameInstacne = nullptr;
+	if (InWorldContext) {
+		GameInstacne = UGameplayStatics::GetGameInstance(InWorldContext);
+		LastUseGameInstance = GameInstacne;
+	}
+	else {
+		GameInstacne = LastUseGameInstance;
+	}
+	return GameInstacne->GetSubsystem<UUIManager>();
 }
 
-void FUIManager::SetPlayerController(APlayerController* InPlayerController)
+void UUIManager::Initialize(FSubsystemCollectionBase& Collection)
+{
+
+}
+
+void UUIManager::Deinitialize()
+{
+	TArray<TObjectPtr<UIPresenter>> PresentersIter = AllPresenters;
+	for (auto Presenter : PresentersIter) {
+		if (Presenter) {
+			Presenter->ForceDestory();
+		}
+	}
+	AllPresenters.Reset();
+}
+
+void UUIManager::SetPlayerController(APlayerController* InPlayerController)
 {
 	CurrentPlayerController = InPlayerController;
-	CurrentGameInstance = UGameplayStatics::GetGameInstance(InPlayerController);
 } 
 
-UGameInstance* FUIManager::GetGameInstance()
-{
-	return CurrentGameInstance;
-}
-
-APlayerController* FUIManager::GetPlayerController()
+APlayerController* UUIManager::GetPlayerController()
 {
 	return CurrentPlayerController;
 }
 
-void FUIManager::RegisterController(UIController* InController)
+void UUIManager::RegisterPresenter(UIPresenter* InController)
 {
-	AllControllers.Add(InController);
+	AllPresenters.Add(InController);
 }
 
-void FUIManager::UnRegisterController(UIController* InController)
+void UUIManager::UnRegisterPresenter(UIPresenter* InController)
 {
-	AllControllers.Remove(InController);
+	AllPresenters.Remove(InController);
 }
 
-TStatId FUIManager::GetStatId() const
+UBlackScreenUIP* UUIManager::GetBlackScreen()
 {
-	RETURN_QUICK_DECLARE_CYCLE_STAT(FUIManager, STATGROUP_Tickables);
+	if (!BlackScreenUIP) {
+		BlackScreenUIP = NewObject<UBlackScreenUIP>();
+	}
+	return BlackScreenUIP;
 }
 
-void FUIManager::Tick(float InDeltaSeconds)
+TStatId UUIManager::GetStatId() const
 {
-	for (auto Controller : AllControllers) {
-		if (Controller) {
-			Controller->OnTickEvent(InDeltaSeconds);
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UUIManager, STATGROUP_Tickables);
+}
+
+void UUIManager::Tick(float InDeltaSeconds)
+{
+	for (auto Presenter : AllPresenters) {
+		if (Presenter) {
+			Presenter->OnTickEvent(InDeltaSeconds);
 		}
 	}
 }
+

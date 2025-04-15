@@ -4,9 +4,10 @@
 void ACmsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FUIManager::Get()->SetPlayerController(this);
-
-	StartupUIC = NewObject<UAiAgentUIC>();
-	StartupUIC->Show();
+	UUIManager::Get(this)->SetPlayerController(this);
+	UUIManager::Get()->GetBlackScreen()->FadeIn(5, [this]() {
+		StartupUIP = NewObject<UAiAgentUIP>();
+		StartupUIP->Show();
+		UUIManager::Get()->GetBlackScreen()->FadeOut(5);
+	});
 }

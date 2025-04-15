@@ -1,31 +1,51 @@
-#include "UIController.h"
+#include "UIPresenter.h"
+#include "UIManager.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
-UIController::UIController(const FObjectInitializer& ObjectInitializer)
+UIPresenter::UIPresenter(const FObjectInitializer& ObjectInitializer)
 {
     if (!HasAnyFlags(RF_ClassDefaultObject)) {
-        FUIManager::Get()->RegisterController(this);
+        UUIManager::Get()->RegisterPresenter(this);
     }
 }
 
-void UIController::BeginDestroy()
+void UIPresenter::BeginDestroy()
 {
     Super::BeginDestroy();
     if (!HasAnyFlags(RF_ClassDefaultObject)) {
-        FUIManager::Get()->UnRegisterController(this);
+        ForceDestory();
     }
 }
 
-UUserWidget* UIController::CreateView(UClass* UMGClass)
+void UIPresenter::ForceDestory()
+{
+	if (!bHasDestroyed) {
+		bHasDestroyed = true;
+		if (bVisible) {
+			OnCloseEvent();
+		}
+		for (auto View : Views) {
+			if (View) {
+				View->RemoveFromParent();
+			}
+		}
+		Views.Reset();
+		CachedVisibilities.Reset();
+		OnDestroy();
+		UUIManager::Get()->UnRegisterPresenter(this);
+	}
+}
+
+UUserWidget* UIPresenter::CreateView(UClass* UMGClass)
 {
     if(!UMGClass)
         return nullptr;
-    UUserWidget* UserWidget = UWidgetBlueprintLibrary::Create(FUIManager::Get()->GetGameInstance(), UMGClass, FUIManager::Get()->GetPlayerController());
+    UUserWidget* UserWidget = UWidgetBlueprintLibrary::Create(UUIManager::Get()->GetGameInstance(), UMGClass, UUIManager::Get()->GetPlayerController());
     Views.Add(UserWidget);
     return UserWidget;
 }
 
-void UIController::SetVisible(bool InVisible)
+void UIPresenter::SetVisible(bool InVisible)
 {
     if (bHasDestroyed){
         UE_LOG(LogCmsUI, Warning, TEXT("UI %s has destroyed"), *GetClass()->GetName());
@@ -65,37 +85,24 @@ void UIController::SetVisible(bool InVisible)
     }
 }
 
-void UIController::Show()
+void UIPresenter::Show()
 {
     SetVisible(true);
 }
 
-void UIController::Hide()
+void UIPresenter::Hide()
 {
     SetVisible(false);
 }
 
-void UIController::ForceDestory()
+
+bool UIPresenter::IsVisible() const
 {
-    if (!bHasDestroyed){
-        bHasDestroyed = true;
-        if (bVisible){
-            OnCloseEvent();
-        }
-        for (auto View : Views) {
-            if (View){
-                View->RemoveFromParent();
-            }
-        }
-        Views.Reset();
-        CachedVisibilities.Reset();
-        OnDestroy();
-        FUIManager::Get()->UnRegisterController(this);
-    }
+    return bVisible;
 }
 
-UWorld* UIController::GetWorld() const
+UWorld* UIPresenter::GetWorld() const
 {
-    return FUIManager::Get()->GetPlayerController()->GetWorld();
+    return UUIManager::Get()->GetPlayerController()->GetWorld();
 }
 

@@ -1,25 +1,25 @@
-#include "AiAgentUIC.h"
+#include "AiAgentUIP.h"
 #include "AiAgent/AiAgentSubsystem.h"
 
-void UAiAgentUIC::OnCreateUI()
+void UAiAgentUIP::OnCreateUI()
 {
 	View = CreateView<UView_AiAgent_C>();
 }
 
-void UAiAgentUIC::OnConnectUI()
+void UAiAgentUIP::OnConnectUI()
 {
-	View->Button_Ask->OnClicked.AddDynamic(this, &UAiAgentUIC::OnAskClicked);
+	View->Button_Ask->OnClicked.AddDynamic(this, &UAiAgentUIP::OnAskClicked);
 }
 
-void UAiAgentUIC::OnDestroy()
-{
-}
-
-void UAiAgentUIC::OnTickEvent(float Delta)
+void UAiAgentUIP::OnDestroy()
 {
 }
 
-void UAiAgentUIC::OnAskClicked()
+void UAiAgentUIP::OnTickEvent(float Delta)
+{
+}
+
+void UAiAgentUIP::OnAskClicked()
 {
 	UAiAgentSubsystem* AiAgent = UAiAgentSubsystem::Get(this);
 	AiAgent->Ask(View->Text_Content->GetText().ToString(), [AiAgent](FString Response) {

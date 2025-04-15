@@ -1,24 +1,29 @@
 #pragma once
 
+#include "CmsLogChannels.h"
 #include "Blueprint/UserWidget.h"
 #include "Subsystems/EngineSubsystem.h"
-#include "CmsLogChannels.h"
+#include "UI/Presenters/Basic/BlackScreenUIP.h"
+#include "UIManager.generated.h"
 
-class UIController;
-
-class FUIManager: public FTickableGameObject {
+UCLASS(DisplayName = "Replay Subsystem", MinimalAPI)
+class UUIManager: public UGameInstanceSubsystem, public FTickableGameObject{
+	GENERATED_BODY()
 public:
-	static FUIManager* Get();
+	static UUIManager* Get(UObject* InWorldContext = nullptr);
 
 	void SetPlayerController(APlayerController* InPlayerController);
 
-	UGameInstance* GetGameInstance();
 	APlayerController* GetPlayerController();
 
-	void RegisterController(UIController* InController);
-	void UnRegisterController(UIController* InController);
+	void RegisterPresenter(UIPresenter* InPresenter);
+	void UnRegisterPresenter(UIPresenter* InPresenter);
 
+	UBlackScreenUIP* GetBlackScreen();
 protected:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
+
 	//~ Begin FTickableGameObject
 	virtual TStatId GetStatId() const override;
 	virtual void Tick(float InDeltaSeconds) override;
@@ -28,7 +33,10 @@ protected:
 	//~ End FTickableGameObject
 
 private:
-	TArray<TObjectPtr<UIController>> AllControllers;
-	TObjectPtr<UGameInstance> CurrentGameInstance;
+	static TObjectPtr<UGameInstance> LastUseGameInstance;
+	TArray<TObjectPtr<UIPresenter>> AllPresenters;
 	TObjectPtr<APlayerController> CurrentPlayerController;
+
+	UPROPERTY()
+	TObjectPtr<class UBlackScreenUIP> BlackScreenUIP;
 };

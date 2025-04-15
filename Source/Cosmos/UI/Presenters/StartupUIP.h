@@ -1,11 +1,11 @@
 #pragma once
 
-#include "UI/Core/UIController.h"
+#include "UI/Core/UIPresenter.h"
 #include "UI/View/View_Startup.inl"
-#include "StartupUIC.generated.h"
+#include "StartupUIP.generated.h"
 
 UCLASS()
-class UStartupUIC : public UIController{
+class UStartupUIP : public UIPresenter{
     GENERATED_BODY()
 public:    
     void OnCreateUI() override;
