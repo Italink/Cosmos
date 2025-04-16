@@ -1,8 +1,7 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
-#include "UI/Presenters/StartupUIP.h"
-#include "UI/Presenters/AiAgentUIP.h"
+#include "UI/Core/UIPresenter.h"
 #include "CmsPlayerController.generated.h"
 
 
@@ -14,5 +13,5 @@ class ACmsPlayerController : public APlayerController
 	virtual void BeginPlay() override;
 
 	UPROPERTY()
-	TObjectPtr<UAiAgentUIP> StartupUIP;
+	TObjectPtr<UIPresenter> StartupUIP;
 };

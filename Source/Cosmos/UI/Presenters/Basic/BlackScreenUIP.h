@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UI/Core/UIPresenter.h"
-#include "UI/View/Basic/UView_BlackScreen.inl"
+#include "UI/View/Basic/UMG_BlackScreen.inl"
 #include "BlackScreenUIP.generated.h"
 
 UCLASS()
@@ -15,7 +15,7 @@ protected:
 	void OnConnectUI() override;
 	void OnDestroy() override;
 private:
-    TObjectPtr<UUView_BlackScreen_C> View;
+    TObjectPtr<UUMG_BlackScreen_C> View;
 
     float TimerProgress = 0.0f;
 

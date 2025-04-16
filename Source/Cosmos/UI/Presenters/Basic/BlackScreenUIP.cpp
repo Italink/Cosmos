@@ -3,7 +3,7 @@
 void UBlackScreenUIP::OnCreateUI()
 {
 	ZOrder = 9999;
-	View = CreateView<UUView_BlackScreen_C>();
+	View = CreateView<UUMG_BlackScreen_C>();
 }
 
 void UBlackScreenUIP::OnConnectUI()
@@ -28,11 +28,12 @@ void UBlackScreenUIP::FadeIn(float InFadeInTimeSec, TFunction<void()> InFinished
     }
     Show();
 
-    View->Blur->SetBlurStrength(InBlurStrength);
-    View->Color->SetBrushTintColor(InColor);
     TimerProgress = 0.0f;
     FadeInTimeSec = InFadeInTimeSec;
     FadeInFinishedCallback = InFinishedCallback;
+
+    View->Blur->SetBlurStrength(InBlurStrength);
+    View->Color->SetBrushTintColor(InColor);
     View->SetRenderOpacity(FadeInTimeSec > 0.0f ? 0.0f : 1.0f);
 
     if (FadeOutTickerHandle.IsValid()) {
@@ -57,7 +58,7 @@ void UBlackScreenUIP::FadeIn(float InFadeInTimeSec, TFunction<void()> InFinished
                 View->SetRenderOpacity(1.0f);
                 return false;
             }
-           }));
+        }));
     }
 }
 

@@ -3,6 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "UICommonInclude.h"
 #include "CmsLogChannels.h"
+#include "DynamicLambda.h"
 #include "UIPresenter.generated.h"
 
 UCLASS()
@@ -19,12 +20,14 @@ public:
 public:
     bool IsVisible() const;
 protected:
-    UUserWidget* CreateView(UClass* UMGClass);
+    UUserWidget* CreateView(UClass* UMGClass, bool bTopLevel = true);
 
     template<typename UMGClass>
-    UMGClass* CreateView() { return Cast<UMGClass>(CreateView(UMGClass::StaticClass())); }
+    UMGClass* CreateView(bool bTopLevel = true) { return Cast<UMGClass>(CreateView(UMGClass::StaticClass(), bTopLevel)); }
 
     void BeginDestroy() override;
+    virtual void ReleaseResource();
+
     virtual void OnCreateUI(){}
     virtual void OnConnectUI() {}
     virtual void OnDestroy() {}
@@ -32,11 +35,31 @@ protected:
     virtual void OnCloseEvent() {}
     virtual void OnTickEvent(float Delta) {}
     virtual UWorld* GetWorld() const override;
+
+    virtual void ProcessEvent(UFunction* Function, void* Parms) override;
+
+    template <typename FuncType>
+    FScriptDelegate CreateLambdaDynamic(FuncType Lambda) {
+        UClass* Class = GetClass();
+        UDynamicLambda* NewDynamicLambda = NewObject<UDynamicLambda>(Class);
+        NewDynamicLambda->SetFlags(RF_Transient);
+        NewDynamicLambda->SetupLambda(Lambda);
+        DynamicLambdas.Add(NewDynamicLambda);
+        Class->AddFunctionToFunctionMap(NewDynamicLambda, NewDynamicLambda->GetFName());
+        FScriptDelegate ScriptDelegate;
+        ScriptDelegate.BindUFunction(this, NewDynamicLambda->GetFName());
+        return ScriptDelegate;
+    }
 public:
     int ZOrder = 0;
     TMap<UUserWidget*, ESlateVisibility> CachedVisibilities;
     bool bVisible = false;
     bool bHasDestroyed = false;
     bool bHasAddToViewport = false;
-    TArray<TObjectPtr<UUserWidget>> Views;
+
+    UPROPERTY()
+    TArray<TObjectPtr<UUserWidget>> TopLevelViews;
+
+    UPROPERTY()
+    TArray<TObjectPtr<UDynamicLambda>> DynamicLambdas;
 };

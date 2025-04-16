@@ -3,12 +3,18 @@
 
 void UAiAgentUIP::OnCreateUI()
 {
-	View = CreateView<UView_AiAgent_C>();
+	View = CreateView<UUMG_AiAgent_C>();
 }
 
 void UAiAgentUIP::OnConnectUI()
 {
-	View->Button_Ask->OnClicked.AddDynamic(this, &UAiAgentUIP::OnAskClicked);
+	View->Button_Ask->OnClicked.Add(CreateLambdaDynamic([]() {
+		UE_LOG(LogTemp, Warning, TEXT("Hello"));
+	}));
+
+	View->Text_Content->OnTextChanged.Add(CreateLambdaDynamic([](FText Text) {
+		UE_LOG(LogTemp, Warning, TEXT("Hello %s"), *Text.ToString());
+	}));
 }
 
 void UAiAgentUIP::OnDestroy()
