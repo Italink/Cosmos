@@ -8,11 +8,11 @@ public:
         return LoadObject<UClass>(nullptr, TEXT("/Game/UI/View/Basic/Settings/UMG_SettingPanel.UMG_SettingPanel_C")); 
     }
 
-    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="CategoryVBox", Category="UMG_SettingPanel"))
-    TObjectPtr<UVerticalBox> CategoryVBox;
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="CategoryBox", Category="UMG_SettingPanel"))
+    TObjectPtr<UHorizontalBox> CategoryBox;
 
-    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="ItemVBox", Category="UMG_SettingPanel"))
-    TObjectPtr<UVerticalBox> ItemVBox;
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="ItemBox", Category="UMG_SettingPanel"))
+    TObjectPtr<UVerticalBox> ItemBox;
 
 
 };

@@ -3,18 +3,18 @@
 
 void UAiAgentUIP::OnCreateUI()
 {
-	View = CreateView<UUMG_AiAgent_C>();
+	Card = CreateWidgetCard<UUMG_AiAgent_C>();
+	View = Cast<UUMG_AiAgent_C>(Card->GetWidget());
 }
 
 void UAiAgentUIP::OnConnectUI()
 {
-	View->Button_Ask->OnClicked.Add(CreateLambdaDynamic([]() {
+	View->Button_Ask->OnClicked.AddDynamicLambda([]() {
 		UE_LOG(LogTemp, Warning, TEXT("Hello"));
-	}));
-
-	View->Text_Content->OnTextChanged.Add(CreateLambdaDynamic([](FText Text) {
+	});
+	View->Text_Content->OnTextChanged.AddDynamicLambda([](FText Text) {
 		UE_LOG(LogTemp, Warning, TEXT("Hello %s"), *Text.ToString());
-	}));
+	});
 }
 
 void UAiAgentUIP::OnDestroy()

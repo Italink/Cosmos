@@ -83,7 +83,7 @@ protected:
     void SetCurrentCategory(FText Category);
 
     void RecreateSettingPanel();
-    void GenerateWidgetForItem(ISettingItemBase* Item, TFunction<void(UWidget*)> WidgetSetupAction);
+    void SetupWidgetByItem(ISettingItemBase* Item, TFunction<void(UWidget*)> WidgetSetupAction);
 protected:
     TObjectPtr<UUMG_SettingPanel_C> View;
     TArray<FText> CategoryOrder;

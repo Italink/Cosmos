@@ -27,7 +27,7 @@ public class Cosmos : ModuleRules
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
-		
+		    "WidgetCard"
         });
 
         AddEngineThirdPartyPrivateStaticDependencies(Target, "zlib");

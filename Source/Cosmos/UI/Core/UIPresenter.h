@@ -3,7 +3,8 @@
 #include "Blueprint/UserWidget.h"
 #include "UICommonInclude.h"
 #include "CmsLogChannels.h"
-#include "DynamicLambda.h"
+#include "Misc/DynamicLambda/DynamicLambda.h"
+#include "WidgetCardActor.h"
 #include "UIPresenter.generated.h"
 
 UCLASS()
@@ -23,9 +24,19 @@ protected:
     UUserWidget* CreateView(UClass* UMGClass, bool bTopLevel = true);
 
     template<typename UMGClass>
-    UMGClass* CreateView(bool bTopLevel = true) { return Cast<UMGClass>(CreateView(UMGClass::StaticClass(), bTopLevel)); }
+    UMGClass* CreateView(bool bTopLevel = true) { 
+        return Cast<UMGClass>(CreateView(UMGClass::StaticClass(), bTopLevel)); 
+    }
 
-    void BeginDestroy() override;
+    AWidgetCard* CreateWidgetCard(UClass* UMGClass, FVector2D DrawSize = FVector2D(500, 500));
+
+    template<typename UMGClass>
+    AWidgetCard* CreateWidgetCard(FVector2D DrawSize = FVector2D(500, 500)) {
+        return (CreateWidgetCard(UMGClass::StaticClass(), DrawSize));
+    }
+
+
+    virtual void BeginDestroy() override;
     virtual void ReleaseResource();
 
     virtual void OnCreateUI(){}
@@ -38,28 +49,37 @@ protected:
 
     virtual void ProcessEvent(UFunction* Function, void* Parms) override;
 
-    template <typename FuncType>
-    FScriptDelegate CreateLambdaDynamic(FuncType Lambda) {
-        UClass* Class = GetClass();
-        UDynamicLambda* NewDynamicLambda = NewObject<UDynamicLambda>(Class);
-        NewDynamicLambda->SetFlags(RF_Transient);
-        NewDynamicLambda->SetupLambda(Lambda);
-        DynamicLambdas.Add(NewDynamicLambda);
-        Class->AddFunctionToFunctionMap(NewDynamicLambda, NewDynamicLambda->GetFName());
-        FScriptDelegate ScriptDelegate;
-        ScriptDelegate.BindUFunction(this, NewDynamicLambda->GetFName());
-        return ScriptDelegate;
-    }
+	template <typename FuncType>
+	FScriptDelegate CreateLambdaDynamic(FuncType Lambda) {
+		UClass* Class = GetClass();
+		UDynamicLambdaFunction* NewDynamicLambda = NewObject<UDynamicLambdaFunction>(Class);
+		NewDynamicLambda->SetFlags(RF_Transient);
+		NewDynamicLambda->SetupLambda(Lambda);
+		DynamicLambdas.Add(NewDynamicLambda);
+		Class->AddFunctionToFunctionMap(NewDynamicLambda, NewDynamicLambda->GetFName());
+		FScriptDelegate ScriptDelegate;
+		ScriptDelegate.BindUFunction(this, NewDynamicLambda->GetFName());
+		return ScriptDelegate;
+	}
 public:
     int ZOrder = 0;
     TMap<UUserWidget*, ESlateVisibility> CachedVisibilities;
     bool bVisible = false;
     bool bHasDestroyed = false;
     bool bHasAddToViewport = false;
+       
+    UPROPERTY()
+    TArray<TObjectPtr<UUserWidget>> TopLevelWidgets;
 
     UPROPERTY()
-    TArray<TObjectPtr<UUserWidget>> TopLevelViews;
+    TArray<TObjectPtr<AWidgetCard>> TopLevelWidgetCards;
 
     UPROPERTY()
-    TArray<TObjectPtr<UDynamicLambda>> DynamicLambdas;
+    TArray<TObjectPtr<UDynamicLambdaFunction>> DynamicLambdas;
 };
+
+#undef BindDynamicLambda
+#undef AddDynamicLambda
+
+#define BindDynamicLambda(Lambda) Bind(this->CreateLambdaDynamic(Lambda))
+#define AddDynamicLambda(Lambda) Add(this->CreateLambdaDynamic(Lambda))

@@ -23,20 +23,24 @@ void UIPresenter::ReleaseResource()
     if (bVisible) {
         OnCloseEvent();
     }
-    for (auto View : TopLevelViews) {
+    for (auto View : TopLevelWidgets) {
         if (View) {
             View->RemoveFromParent();
         }
     }
-    TopLevelViews.Empty();
+    TopLevelWidgets.Empty();
     CachedVisibilities.Empty();
+
+    for (auto Card : TopLevelWidgetCards) {
+        Card->Destroy();
+    }
+    TopLevelWidgetCards.Empty();
 
     UClass* Class = GetClass();
     for (auto DynamicLambda : DynamicLambdas) {
         Class->RemoveFunctionFromFunctionMap(DynamicLambda);
     }
     DynamicLambdas.Empty();
-
     OnDestroy();
     UUIManager::Get()->UnRegisterPresenter(this);
 }
@@ -55,9 +59,23 @@ UUserWidget* UIPresenter::CreateView(UClass* UMGClass, bool bTopLevel)
         return nullptr;
     UUserWidget* UserWidget = UWidgetBlueprintLibrary::Create(UUIManager::Get()->GetGameInstance(), UMGClass, UUIManager::Get()->GetPlayerController());
     if (bTopLevel) {
-        TopLevelViews.Add(UserWidget);
+        TopLevelWidgets.Add(UserWidget);
     }
     return UserWidget;
+}
+
+
+AWidgetCard* UIPresenter::CreateWidgetCard(UClass* UMGClass, FVector2D DrawSize /*= FVector2D(500, 500)*/)
+{
+    if (!UMGClass)
+        return nullptr;
+    UWorld* World = GetWorld();
+    UUserWidget* UserWidget = UWidgetBlueprintLibrary::Create(UUIManager::Get()->GetGameInstance(), UMGClass, UUIManager::Get()->GetPlayerController());
+    AWidgetCard* WidgetCard = World->SpawnActor<AWidgetCard>();
+    WidgetCard->SetDrawSize(DrawSize);
+    WidgetCard->SetWidget(UserWidget);
+    WidgetCard->SetHidden(true);
+    return WidgetCard;
 }
 
 void UIPresenter::SetVisible(bool InVisible)
@@ -78,23 +96,32 @@ void UIPresenter::SetVisible(bool InVisible)
     if (bVisible){
         if (!bHasAddToViewport){
             OnCreateUI();
-            for(auto View : TopLevelViews){
+            for(auto View : TopLevelWidgets){
                 View->AddToViewport(ZOrder);
                 CachedVisibilities.Add(View, View->GetVisibility());
+            }
+            for (auto Card : TopLevelWidgetCards) {
+                Card->SetHidden(false);
             }
             OnConnectUI();
             bHasAddToViewport = true;
         }
         else{
-            for (auto View : TopLevelViews){
+            for (auto View : TopLevelWidgets){
                 View->SetVisibility(CachedVisibilities[View]);
+            }
+            for (auto Card : TopLevelWidgetCards) {
+                Card->SetHidden(false);
             }
         }
         OnShowEvent();
     }
     else{
-        for (auto View : TopLevelViews) {
+        for (auto View : TopLevelWidgets) {
             View->SetVisibility(ESlateVisibility::Hidden);
+        }
+        for (auto Card : TopLevelWidgetCards) {
+            Card->SetHidden(true);
         }
         OnCloseEvent();
     }
@@ -123,7 +150,7 @@ UWorld* UIPresenter::GetWorld() const
 
 void UIPresenter::ProcessEvent(UFunction* Function, void* Parms)
 {
-    if (UDynamicLambda* DynamicLambda = Cast<UDynamicLambda>(Function)) {
+    if (UDynamicLambdaFunction* DynamicLambda = Cast<UDynamicLambdaFunction>(Function)) {
         DynamicLambda->Invoke(Parms);
     }
     else {

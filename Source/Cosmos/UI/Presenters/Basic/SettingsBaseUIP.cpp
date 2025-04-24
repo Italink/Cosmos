@@ -119,14 +119,14 @@ void USettingsBaseUIP::AddComboBoxItem(FText Name, TArray<FString> OptionList, i
 void USettingsBaseUIP::RecreateSettingPanel()
 {
 	if (View) {
-		View->CategoryVBox->ClearChildren();
+		View->CategoryBox->ClearChildren();
 		for (auto Category : CategoryOrder) {
 			UUMG_CategorySettingItem_C* CategoryItem = CreateView<UUMG_CategorySettingItem_C>(false);
 			CategoryItem->Name->SetText(Category);
 			CategoryItem->Button->OnClicked.Add(CreateLambdaDynamic([this, Category]() {
 				SetCurrentCategory(Category);
 			}));
-			View->CategoryVBox->AddChildToVerticalBox(CategoryItem);
+			View->CategoryBox->AddChildToHorizontalBox(CategoryItem);
 		}
 	}
 	if (!CategoryOrder.IsEmpty()) {
@@ -136,17 +136,17 @@ void USettingsBaseUIP::RecreateSettingPanel()
 
 void USettingsBaseUIP::SetCurrentCategory(FText Category)
 {
-	View->ItemVBox->ClearChildren();
+	View->ItemBox->ClearChildren();
 	if (CategorySettingsMap.Contains(Category.ToString())){
 		for(auto Item : CategorySettingsMap[Category.ToString()]){
-			GenerateWidgetForItem(Item.Get(), [this](UWidget* Widget){
-				View->ItemVBox->AddChildToVerticalBox(Widget);
+			SetupWidgetByItem(Item.Get(), [this](UWidget* Widget){
+				View->ItemBox->AddChildToVerticalBox(Widget);
 			});
 		}
 	}
 }
 
-void USettingsBaseUIP::GenerateWidgetForItem(ISettingItemBase* Item, TFunction<void(UWidget*)> WidgetSetupAction)
+void USettingsBaseUIP::SetupWidgetByItem(ISettingItemBase* Item, TFunction<void(UWidget*)> WidgetSetupAction)
 {
 	switch (Item->Type)
 	{
@@ -228,8 +228,10 @@ void USettingsBaseUIP::GenerateWidgetForItem(ISettingItemBase* Item, TFunction<v
 			UWrapBox* GroupLayout = NewObject<UWrapBox>();
 			WidgetSetupAction(GroupLayout);
 			for (auto SubItem : Cmd->SubItemList) {
-				GenerateWidgetForItem(SubItem.Get(), [this, GroupLayout](UWidget* Widget) {
-					GroupLayout->AddChildToWrapBox(Widget);
+				SetupWidgetByItem(SubItem.Get(), [this, GroupLayout, Item](UWidget* Widget) {
+					auto Slot = GroupLayout->AddChildToWrapBox(Widget);
+					Slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+					Slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
 				});
 			}
 		}
@@ -237,8 +239,10 @@ void USettingsBaseUIP::GenerateWidgetForItem(ISettingItemBase* Item, TFunction<v
 			UVerticalBox* GroupLayout = NewObject<UVerticalBox>();
 			WidgetSetupAction(GroupLayout);
 			for (auto SubItem : Cmd->SubItemList) {
-				GenerateWidgetForItem(SubItem.Get(), [this, GroupLayout](UWidget* Widget) {
-					GroupLayout->AddChildToVerticalBox(Widget);
+				SetupWidgetByItem(SubItem.Get(), [this, GroupLayout, Item](UWidget* Widget) {
+					auto Slot = GroupLayout->AddChildToVerticalBox(Widget);
+					Slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+					Slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
 				});
 			}
 		}
@@ -246,8 +250,10 @@ void USettingsBaseUIP::GenerateWidgetForItem(ISettingItemBase* Item, TFunction<v
 			UHorizontalBox* GroupLayout = NewObject<UHorizontalBox>();
 			WidgetSetupAction(GroupLayout);
 			for (auto SubItem : Cmd->SubItemList) {
-				GenerateWidgetForItem(SubItem.Get(), [this, GroupLayout](UWidget* Widget) {
-					GroupLayout->AddChildToHorizontalBox(Widget);
+				SetupWidgetByItem(SubItem.Get(), [this, GroupLayout, Item](UWidget* Widget) {
+					auto Slot = GroupLayout->AddChildToHorizontalBox(Widget);
+					Slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+					Slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
 				});
 			}
 		}

@@ -16,5 +16,6 @@ public:
 	UFUNCTION()
 	void OnAskClicked();
 private:
+	TObjectPtr<AWidgetCard> Card;
 	TObjectPtr<UUMG_AiAgent_C> View;
 };
