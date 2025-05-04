@@ -5,14 +5,14 @@ class UUMG_Startup_C : public UUserWidget
 public:
     static UClass* StaticClass()
     {
-        return LoadObject<UClass>(nullptr, TEXT("/Game/UI/View/UMG_Startup.UMG_Startup_C")); 
+        return LoadObject<UClass>(nullptr, TEXT("/Game/Cosmos/UI/View/UMG_Startup.UMG_Startup_C")); 
     }
 
-    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Button_30", Category="UMG_Startup"))
-    TObjectPtr<UButton> Button_30;
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Button_Settings", Category="UMG_Startup"))
+    TObjectPtr<UButton> Button_Settings;
 
-    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="TextBlock_36", Category="UMG_Startup"))
-    TObjectPtr<UTextBlock> TextBlock_36;
+    UPROPERTY(BlueprintReadOnly, Instanced, NotReplicated, Meta = (EditInline="true", DisplayName="Button_Start", Category="UMG_Startup"))
+    TObjectPtr<UButton> Button_Start;
 
 
 };

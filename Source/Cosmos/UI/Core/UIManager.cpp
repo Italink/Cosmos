@@ -3,10 +3,9 @@
 #include "UIPresenter.h"
 #include "Kismet/GameplayStatics.h"
 
-TObjectPtr<UGameInstance> UUIManager::LastUseGameInstance;
-
 UUIManager* UUIManager::Get(UObject* InWorldContext)
 {
+	static TObjectPtr<UGameInstance> LastUseGameInstance;
 	UGameInstance* GameInstacne = nullptr;
 	if (InWorldContext) {
 		GameInstacne = UGameplayStatics::GetGameInstance(InWorldContext);

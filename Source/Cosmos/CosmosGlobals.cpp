@@ -1,4 +1,4 @@
-#include "CmsLogChannels.h"
+#include "CosmosGlobals.h"
 
 DEFINE_LOG_CATEGORY(LogCms);
 DEFINE_LOG_CATEGORY(LogCmsUI);

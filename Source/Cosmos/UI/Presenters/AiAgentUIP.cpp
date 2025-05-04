@@ -9,10 +9,10 @@ void UAiAgentUIP::OnCreateUI()
 
 void UAiAgentUIP::OnConnectUI()
 {
-	View->Button_Ask->OnClicked.AddDynamicLambda([]() {
+	View->Button_Ask->OnClicked.AddDynamicLocalLambda([]() {
 		UE_LOG(LogTemp, Warning, TEXT("Hello"));
 	});
-	View->Text_Content->OnTextChanged.AddDynamicLambda([](FText Text) {
+	View->Text_Content->OnTextChanged.AddDynamicLocalLambda([](FText Text) {
 		UE_LOG(LogTemp, Warning, TEXT("Hello %s"), *Text.ToString());
 	});
 }

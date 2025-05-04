@@ -1,13 +1,13 @@
 #pragma once
 
-#include "CmsLogChannels.h"
+#include "CosmosGlobals.h"
 #include "Blueprint/UserWidget.h"
 #include "Subsystems/EngineSubsystem.h"
 #include "UI/Presenters/Basic/BlackScreenUIP.h"
 #include "UIManager.generated.h"
 
-UCLASS(DisplayName = "Replay Subsystem", MinimalAPI)
-class UUIManager: public UGameInstanceSubsystem, public FTickableGameObject{
+UCLASS(MinimalAPI)
+class UUIManager : public UGameInstanceSubsystem, public FTickableGameObject{
 	GENERATED_BODY()
 public:
 	static UUIManager* Get(UObject* InWorldContext = nullptr);
@@ -33,7 +33,6 @@ protected:
 	//~ End FTickableGameObject
 
 private:
-	static TObjectPtr<UGameInstance> LastUseGameInstance;
 	TArray<TObjectPtr<UIPresenter>> AllPresenters;
 	TObjectPtr<APlayerController> CurrentPlayerController;
 

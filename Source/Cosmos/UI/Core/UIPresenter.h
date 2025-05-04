@@ -2,7 +2,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "UICommonInclude.h"
-#include "CmsLogChannels.h"
+#include "CosmosGlobals.h"
 #include "Misc/DynamicLambda/DynamicLambda.h"
 #include "WidgetCardActor.h"
 #include "UIPresenter.generated.h"
@@ -78,8 +78,5 @@ public:
     TArray<TObjectPtr<UDynamicLambdaFunction>> DynamicLambdas;
 };
 
-#undef BindDynamicLambda
-#undef AddDynamicLambda
-
-#define BindDynamicLambda(Lambda) Bind(this->CreateLambdaDynamic(Lambda))
-#define AddDynamicLambda(Lambda) Add(this->CreateLambdaDynamic(Lambda))
+#define BindDynamicLocalLambda(Lambda) Bind(this->CreateLambdaDynamic(Lambda))
+#define AddDynamicLocalLambda(Lambda) Add(this->CreateLambdaDynamic(Lambda))

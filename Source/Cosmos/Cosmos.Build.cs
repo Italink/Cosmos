@@ -23,7 +23,9 @@ public class Cosmos : ModuleRules
             "Json",
 			"HTTP",
             "WebSockets",
-            "SignalProcessing"
+            "SignalProcessing",
+            "LevelSequence",
+            "MovieScene"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
