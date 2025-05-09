@@ -1,19 +1,19 @@
-#include "IGameflowNode.h"
+#include "IGameflowContext.h"
 
-void IGameflowNode::Pop()
+void IGameflowContext::Pop()
 {
     if (USignalEventManager::Get() == nullptr || !bActivated)
         return;
     for (int32 ID : LocalEvents) {
         USignalEventManager::Get()->RemoveSignalEvent(ID);
     }        
-    for (auto Node : AllNodes) {
-        if (Node.Value == this) {
-            AllNodes.Remove(Node.Key);
+    for (auto Context : AllContexts) {
+        if (Context.Value == this) {
+            AllContexts.Remove(Context.Key);
             break;
         }
     }
     bActivated = false;
 }
 
-TMap<FName, IGameflowNode*> IGameflowNode::AllNodes;
+TMap<FName, IGameflowContext*> IGameflowContext::AllContexts;

@@ -1,4 +1,4 @@
-#include "LoginGF.h"
+#include "LoginGFC.h"
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
@@ -8,7 +8,7 @@
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 
-void FLoginGF::Activate()
+void FLoginGFC::Activate()
 {
 	Signals.WorldReady.BindEvent([this](UWorld* World) {
 		LoadObjectAsync<ULevelSequence>(TEXT("/Game/Cosmos/Sequence/LS_Startup.LS_Startup"), [this, World](ULevelSequence* Sequence) {

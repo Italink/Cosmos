@@ -2,7 +2,7 @@
 
 #include "GameFramework/PlayerController.h"
 #include "UI/Core/UIPresenter.h"
-#include "Gameflow/LoginGF.h"
+#include "Gameflow/LoginGFC.h"
 #include "CmsPlayerController.generated.h"
 
 UCLASS()
@@ -12,5 +12,5 @@ class ACmsPlayerController : public APlayerController
 
 	virtual void BeginPlay() override;
 
-	TSharedPtr<FLoginGF> LoginGF;
+	TSharedPtr<FLoginGFC> LoginGFC;
 };
