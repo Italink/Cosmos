@@ -4,57 +4,65 @@
 #include "Core/SignalEventManager.h"
 
 class IGameflowNode : public TSharedFromThis<IGameflowNode> {
-    friend struct FGameflowSignal;
+	friend struct FGameflowSignal;
+
+protected:
+	virtual void Activate() {}
+	virtual void Deavtivate() {}
+
 public:
-    virtual ~IGameflowNode() {
-        if (USignalEventManager::Get() == nullptr)
-            return;
-        for (int32 ID : LocalEvents) {
-            USignalEventManager::Get()->RemoveSignalEvent(ID);
-        }
-    }
+	virtual ~IGameflowNode() {}
 
-    virtual void Activate() {}
-    virtual void Deavtivate() {}
+	template<typename NodeType>
+	static TSharedPtr<NodeType> Push() {
+		TSharedPtr<NodeType> Node = MakeShareable(new NodeType, [](NodeType* Node) {
+			Node->Deavtivate();
+			Node->Pop();
+			delete Node;
+			});
+		if (AllNodes.Contains(NodeType::GetNodeName())) {
+			UE_LOG(LogCmsSignal, Warning, TEXT("Node [%s] already existed!"), *NodeType::GetNodeName().ToString());
+		}
+		AllNodes.Add(NodeType::GetNodeName(), Node.Get());
+		Node->Activate();
+		Node->bActivated = false;
+		return Node;
+	}
 
-    template<typename NodeType>
-    static TSharedPtr<NodeType> Make() {
-        TSharedPtr<NodeType> Node = MakeShareable(new NodeType, [](NodeType* Node) {
-            Node->Deavtivate();
-            AllNodes.Remove(NodeType::GetNodeName());
-            delete Node;
-        });
-        if (AllNodes.Contains(NodeType::GetNodeName())) {
-            UE_LOG(LogCmsSignal, Warning, TEXT("Node [%s] already existed!"), *NodeType::GetNodeName().ToString());
-        }
-        AllNodes.Add(NodeType::GetNodeName(), Node.Get());
-        Node->Activate();
-        return Node;
-    }
+	template<typename NodeType>
+	void Pop() {
+		if (NodeType* Node = Get<NodeType>()) {
+			Node->Pop();
+		}
+	}
 
-    template<typename NodeType>
-    NodeType* Get() {
-        return AllNodes.Find(NodeType::GetNodeName());
-    }
+	void Pop();
+
+	template<typename NodeType>
+	NodeType* Get() {
+		return AllNodes.Find(NodeType::GetNodeName());
+	}
+
 private:
-    TArray<int32> LocalEvents;
-    static TMap<FName, IGameflowNode*> AllNodes;
+	bool bActivated = false;
+	TArray<int32> LocalEvents;
+	static TMap<FName, IGameflowNode*> AllNodes;
 };
 
-struct FGameflowSignal{
-    FName Name;
-    IGameflowNode* Owner = nullptr;
+struct FGameflowSignal {
+	FName Name;
+	IGameflowNode* Owner = nullptr;
 
-    template <typename FuncType>
-    void BindEvent(const FuncType& EventCallback) {
-        int32 ID = USignalEventManager::Get()->AddSignalEvent(Name, EventCallback);
-        Owner->LocalEvents.Add(ID);
-    }
+	template <typename FuncType>
+	void BindEvent(const FuncType& EventCallback) {
+		int32 ID = USignalEventManager::Get()->AddSignalEvent(Name, EventCallback);
+		Owner->LocalEvents.Add(ID);
+	}
 
-    template <typename... ArgsType>
-    void Invoke(ArgsType... Args) {
-        USignalEventManager::Get()->InvokeSignal(Name, Args...);
-    }
+	template <typename... ArgsType>
+	void Invoke(ArgsType... Args) {
+		USignalEventManager::Get()->InvokeSignal(Name, Args...);
+	}
 };
 
 #define GAMEFLOW_NODE_BEGIN(Name) \
@@ -68,6 +76,5 @@ struct FGameflowSignal{
 
 #define GAMEFLOW_NODE_SIGNAL(SignalName) \
             FGameflowSignal SignalName{ #SignalName , Owner };
-        
 
-    
+
