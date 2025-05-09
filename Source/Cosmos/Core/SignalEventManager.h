@@ -68,6 +68,7 @@ public:
 				if (ISignalEvent* Event = EventSPtr.Get()){
 					if (Event->IsNative()) {
 						// TODO
+						Event->Invoke((void*)ParamsBuffer.data());
 					}
 					else {
 						FSignalEvent_Lambda<TFunction<void(ArgsType...)>>* LambdaEvent =  static_cast<FSignalEvent_Lambda<TFunction<void(ArgsType...)>>*>(Event);

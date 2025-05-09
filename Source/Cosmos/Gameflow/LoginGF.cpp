@@ -16,6 +16,7 @@ void FLoginGF::Activate()
 			CameraActor->GetCameraComponent()->bConstrainAspectRatio = false;
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
 			PlayerController->SetViewTarget(CameraActor);
+
 			FMovieSceneSequencePlaybackSettings Settings;
 			ALevelSequenceActor* SequenceActor = nullptr;
 			ULevelSequencePlayer::CreateLevelSequencePlayer(World, Sequence, Settings, SequenceActor);

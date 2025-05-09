@@ -57,11 +57,17 @@ struct FGameflowSignal{
     }
 };
 
-
 #define GAMEFLOW_NODE_BEGIN(Name) \
     public: \
-        inline static struct FSignals_##Name { 
+        static FName GetNodeName() { return TEXT(#Name); }; \
+        struct FSignals { \
+            IGameflowNode* Owner = nullptr;
 
+#define GAMEFLOW_NODE_END() \
+        } Signals { this };
+
+#define GAMEFLOW_NODE_SIGNAL(SignalName) \
+            FGameflowSignal SignalName{ #SignalName , Owner };
         
 
     

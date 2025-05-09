@@ -5,14 +5,10 @@
 
 class FLoginGF : public IGameflowNode {
 public:
-	static FName GetNodeName() { return TEXT("Login"); };
-	struct FSignals
-	{
-		IGameflowNode* Owner = nullptr;
-		FGameflowSignal WorldReady{ "WorldReady", Owner };
-		FGameflowSignal LoginSequencePlayFinisehd{ "LoginSequencePlayFinisehd", Owner };
-
-	}Signals{ this };
+	GAMEFLOW_NODE_BEGIN(FLoginGF)
+		GAMEFLOW_NODE_SIGNAL(WorldReady)
+		GAMEFLOW_NODE_SIGNAL(LoginSequencePlayFinisehd)
+	GAMEFLOW_NODE_END()
 
 	virtual void Activate() override;
 private:
