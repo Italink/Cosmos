@@ -3,7 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "UICommonInclude.h"
 #include "CosmosGlobals.h"
-#include "Misc/DynamicLambda/DynamicLambda.h"
+#include "Core/DynamicLambda.h"
 #include "WidgetCardActor.h"
 #include "UIPresenter.generated.h"
 

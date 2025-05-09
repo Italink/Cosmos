@@ -1,19 +1,20 @@
 #pragma once
 
-#include "IGameflow.h"
+#include "IGameflowNode.h"
 #include "UI/Presenters/StartupUIP.h"
-#include "LoginGF.generated.h"
 
-UCLASS(MinimalAPI)
-class ULoginFlow : public UGameInstanceSubsystem {
-	GENERATED_BODY()
+class FLoginGF : public IGameflowNode {
 public:
-	DEFINE_GAMEFLOW_DELEGATE_TYPED(WorldReady, FSimpleMulticastDelegate);
-	DEFINE_GAMEFLOW_DELEGATE_TYPED(LoginSequencePlayFinisehd, FSimpleMulticastDelegate);
-public:
-	static ULoginFlow* Get(UObject* InWorldContext = nullptr);
-	void Setup();
+	static FName GetNodeName() { return TEXT("Login"); };
+	struct FSignals
+	{
+		IGameflowNode* Owner = nullptr;
+		FGameflowSignal WorldReady{ "WorldReady", Owner };
+		FGameflowSignal LoginSequencePlayFinisehd{ "LoginSequencePlayFinisehd", Owner };
 
-	UPROPERTY()
+	}Signals{ this };
+
+	virtual void Activate() override;
+private:
 	TObjectPtr<UStartupUIP> StartupUIP;
 };

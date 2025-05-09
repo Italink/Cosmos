@@ -7,8 +7,8 @@
 void ACmsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	USignalEventManager::Get(this);
 	UUIManager::Get(this)->SetPlayerController(this);
-
-	ULoginFlow::Get(this)->Setup();
-	ULoginFlow::Get()->GetWorldReady().Broadcast();
+	LoginGF = IGameflowNode::Make<FLoginGF>();
+	LoginGF->Signals.WorldReady.Invoke(GetWorld());
 }

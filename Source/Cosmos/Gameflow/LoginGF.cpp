@@ -2,40 +2,25 @@
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
-#include "Misc/DynamicLambda/DynamicLambda.h"
+#include "Core/DynamicLambda.h"
 #include "Kismet/GameplayStatics.h"
 #include "DefaultLevelSequenceInstanceData.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 
-ULoginFlow* ULoginFlow::Get(UObject* InWorldContext /*= nullptr*/)
+void FLoginGF::Activate()
 {
-	static TObjectPtr<UGameInstance> LastUseGameInstance;
-	UGameInstance* GameInstacne = nullptr;
-	if (InWorldContext) {
-		GameInstacne = UGameplayStatics::GetGameInstance(InWorldContext);
-		LastUseGameInstance = GameInstacne;
-	}
-	else {
-		GameInstacne = LastUseGameInstance;
-	}
-	return GameInstacne->GetSubsystem<ULoginFlow>();
-}
-
-void ULoginFlow::Setup()
-{
-	WorldReady.AddLambda([this]() {
-		LoadObjectAsync<ULevelSequence>(TEXT("/Game/Cosmos/Sequence/LS_Startup.LS_Startup"), [this](ULevelSequence* Sequence){
-			UWorld* World = GetWorld();
+	Signals.WorldReady.BindEvent([this](UWorld* World) {
+		LoadObjectAsync<ULevelSequence>(TEXT("/Game/Cosmos/Sequence/LS_Startup.LS_Startup"), [this, World](ULevelSequence* Sequence) {
 			ACameraActor* CameraActor = World->SpawnActor<ACameraActor>();
 			CameraActor->GetCameraComponent()->bConstrainAspectRatio = false;
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
 			PlayerController->SetViewTarget(CameraActor);
 			FMovieSceneSequencePlaybackSettings Settings;
 			ALevelSequenceActor* SequenceActor = nullptr;
-			ULevelSequencePlayer::CreateLevelSequencePlayer(this, Sequence, Settings, SequenceActor);
+			ULevelSequencePlayer::CreateLevelSequencePlayer(World, Sequence, Settings, SequenceActor);
 			SequenceActor->SequencePlayer->OnFinished.AddDynamicLambda(nullptr, [this]() {
-				LoginSequencePlayFinisehd.Broadcast();
+				Signals.LoginSequencePlayFinisehd.Invoke();
 			});
 			UMovieScene* MovieScene = Sequence->GetMovieScene();
 			check(MovieScene);
@@ -43,7 +28,7 @@ void ULoginFlow::Setup()
 			check(Binding);
 			EMovieSceneObjectBindingSpace Space = EMovieSceneObjectBindingSpace::Root;
 			FMovieSceneObjectBindingID BindingID = UE::MovieScene::FRelativeObjectBindingID(Binding->GetObjectGuid());
-			if (Space == EMovieSceneObjectBindingSpace::Root){
+			if (Space == EMovieSceneObjectBindingSpace::Root) {
 				BindingID.ReinterpretAsFixed();
 			}
 			SequenceActor->AddBinding(BindingID, CameraActor);
@@ -51,9 +36,8 @@ void ULoginFlow::Setup()
 		});
 	});
 
-	LoginSequencePlayFinisehd.AddLambda([this]() {
+	Signals.LoginSequencePlayFinisehd.BindEvent([this]() {
 		StartupUIP = NewObject<UStartupUIP>();
 		StartupUIP->Show();
 	});
 }
-
