@@ -35,12 +35,6 @@ void UIPresenter::ReleaseResource()
         Card->Destroy();
     }
     TopLevelWidgetCards.Empty();
-
-    UClass* Class = GetClass();
-    for (auto DynamicLambda : DynamicLambdas) {
-        Class->RemoveFunctionFromFunctionMap(DynamicLambda);
-    }
-    DynamicLambdas.Empty();
     OnDestroy();
     UUIManager::Get()->UnRegisterPresenter(this);
 }
@@ -63,7 +57,6 @@ UUserWidget* UIPresenter::CreateView(UClass* UMGClass, bool bTopLevel)
     }
     return UserWidget;
 }
-
 
 AWidgetCard* UIPresenter::CreateWidgetCard(UClass* UMGClass, FVector2D DrawSize /*= FVector2D(500, 500)*/)
 {
@@ -147,14 +140,3 @@ UWorld* UIPresenter::GetWorld() const
 {
     return UUIManager::Get()->GetPlayerController()->GetWorld();
 }
-
-void UIPresenter::ProcessEvent(UFunction* Function, void* Parms)
-{
-    if (UDynamicLambdaFunction* DynamicLambda = Cast<UDynamicLambdaFunction>(Function)) {
-        DynamicLambda->Invoke(Parms);
-    }
-    else {
-        UObject::ProcessEvent(Function, Parms);
-    }
-}
-

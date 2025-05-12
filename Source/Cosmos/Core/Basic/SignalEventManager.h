@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/DynamicLambda.h"
 #include "CosmosGlobals.h"
 #include "TemplateTraits.h"
 #include "SignalEventManager.generated.h"

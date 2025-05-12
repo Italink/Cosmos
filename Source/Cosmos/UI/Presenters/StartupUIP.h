@@ -1,8 +1,9 @@
 #pragma once
 
-#include "UI/Core/UIPresenter.h"
+#include "Core/UI/UIPresenter.h"
 #include "UI/View/UMG_Startup.inl"
 #include "StartupUIP.generated.h"
+
 
 UCLASS()
 class UStartupUIP : public UIPresenter{
@@ -14,6 +15,6 @@ public:
     UFUNCTION()
     void OnButtonClicked();
 
-private:
+public:
     TObjectPtr<UUMG_Startup_C> View;
 };

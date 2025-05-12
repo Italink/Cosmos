@@ -12,7 +12,7 @@ COSMOS_API DECLARE_LOG_CATEGORY_EXTERN(LogCmsCharacter, Log, All);
 template<class T>
 inline TSharedPtr<FStreamableHandle> LoadObjectAsync(
 	const TCHAR* ObjectPath, 
-	TFunction<void(T*)> Callback,
+	TFunction<void(T*)> Callback = {},
 	TAsyncLoadPriority Priority = 0,
 	bool bManageActiveHandle = false,
 	bool bStartStalled = false,

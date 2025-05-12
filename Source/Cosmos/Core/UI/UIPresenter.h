@@ -2,13 +2,12 @@
 
 #include "Blueprint/UserWidget.h"
 #include "UICommonInclude.h"
-#include "CosmosGlobals.h"
-#include "Core/DynamicLambda.h"
 #include "WidgetCardActor.h"
+#include "Core/Basic/ObjectPlus.h"
 #include "UIPresenter.generated.h"
 
 UCLASS()
-class UIPresenter : public UObject{
+class UIPresenter : public UObjectPlus {
     GENERATED_UCLASS_BODY()
     friend class UUIManager;
 public:    
@@ -35,7 +34,6 @@ protected:
         return (CreateWidgetCard(UMGClass::StaticClass(), DrawSize));
     }
 
-
     virtual void BeginDestroy() override;
     virtual void ReleaseResource();
 
@@ -46,21 +44,6 @@ protected:
     virtual void OnCloseEvent() {}
     virtual void OnTickEvent(float Delta) {}
     virtual UWorld* GetWorld() const override;
-
-    virtual void ProcessEvent(UFunction* Function, void* Parms) override;
-
-	template <typename FuncType>
-	FScriptDelegate CreateLambdaDynamic(FuncType Lambda) {
-		UClass* Class = GetClass();
-		UDynamicLambdaFunction* NewDynamicLambda = NewObject<UDynamicLambdaFunction>(Class);
-		NewDynamicLambda->SetFlags(RF_Transient);
-		NewDynamicLambda->SetupLambda(Lambda);
-		DynamicLambdas.Add(NewDynamicLambda);
-		Class->AddFunctionToFunctionMap(NewDynamicLambda, NewDynamicLambda->GetFName());
-		FScriptDelegate ScriptDelegate;
-		ScriptDelegate.BindUFunction(this, NewDynamicLambda->GetFName());
-		return ScriptDelegate;
-	}
 public:
     int ZOrder = 0;
     TMap<UUserWidget*, ESlateVisibility> CachedVisibilities;
@@ -74,9 +57,4 @@ public:
     UPROPERTY()
     TArray<TObjectPtr<AWidgetCard>> TopLevelWidgetCards;
 
-    UPROPERTY()
-    TArray<TObjectPtr<UDynamicLambdaFunction>> DynamicLambdas;
 };
-
-#define BindDynamicLocalLambda(Lambda) Bind(this->CreateLambdaDynamic(Lambda))
-#define AddDynamicLocalLambda(Lambda) Add(this->CreateLambdaDynamic(Lambda))

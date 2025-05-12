@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameFramework/PlayerController.h"
-#include "UI/Core/UIPresenter.h"
 #include "Gameflow/LoginGFC.h"
 #include "CmsPlayerController.generated.h"
 
@@ -12,5 +11,5 @@ class ACmsPlayerController : public APlayerController
 
 	virtual void BeginPlay() override;
 
-	TSharedPtr<FLoginGFC> LoginGFC;
+	TObjectPtr<ULoginGFC> LoginGFC;
 };

@@ -1,16 +1,25 @@
 #pragma once
 
-#include "IGameflowContext.h"
+#include "Core/Gameflow/GameflowContext.h"
 #include "UI/Presenters/StartupUIP.h"
+#include "LoginGFC.generated.h"
 
-class FLoginGFC : public IGameflowContext {
-public:
-	GAMEFLOW_CONTEXT_BEGIN(FLoginGFC)
+UCLASS()
+class ULoginGFC : public UGameflowContext {
+	GENERATED_BODY()
+	GAMEFLOW_CONTEXT_BEGIN(ULoginGFC)
 		GAMEFLOW_CONTEXT_SIGNAL(WorldReady)
-		GAMEFLOW_CONTEXT_SIGNAL(LoginSequencePlayFinisehd)
+		GAMEFLOW_CONTEXT_SIGNAL(OpeningSequencePlayFinisehd)
+		GAMEFLOW_CONTEXT_SIGNAL(ShowMenuSequencePlayFinisehd)
 	GAMEFLOW_CONTEXT_END()
+
 protected:
 	virtual void Activate() override;
+
 private:
+	UPROPERTY()
 	TObjectPtr<UStartupUIP> StartupUIP;
+
+	UPROPERTY()
+	TObjectPtr<ACameraActor> SequenceCameraActor;
 };
